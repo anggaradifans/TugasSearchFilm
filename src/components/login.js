@@ -23,7 +23,7 @@ class Login extends React.Component{
                           <input type="checkbox" className="form-check-input" id="exampleCheck1" />
                           <label className="form-check-label" htmlFor="exampleCheck1">Remember Me</label>
                         </div>
-                        <a href=''>Forgot your passwords?</a>
+                        {/* <a href=''>Forgot your passwords?</a> */}
                         <br/>
                         <input type="button" className="btn btn-primary"  value='Submit'></input>
                       </form> 

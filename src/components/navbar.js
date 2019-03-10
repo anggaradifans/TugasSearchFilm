@@ -20,7 +20,7 @@ export default class Example extends React.Component {
   render() {
     return (
       <div>
-        <div style={{marginBottom:"75px"}}>
+        <div style={{marginBottom:"50px"}}>
                         <Navbar color="light" light expand="md" fixed="top">
                             <NavbarBrand className="ml-2" ><Link to='/'> <img src="http://www.logospng.com/images/43/letter-f-bootstrap-logos-43177.png" alt="brand" width="30px" /> </Link> </NavbarBrand>
                             <NavbarToggler onClick={this.toggle} />
@@ -28,11 +28,14 @@ export default class Example extends React.Component {
                                 <Nav className="ml-auto" navbar>
                                     <NavItem>
                                     <div className="input-group border-right" style={{width:"350px"}}>
-                                        <input type="text" ref="searchBook" className="form-control" placeholder="Masukkan kata kunci ... " />
+                                        <input type="text" ref="searchBook" className="form-control" placeholder="Enter keywords ... " />
                                         <div className="input-group-append mr-2">
                                             <button className="btn border-secondary" type="button" id="button-addon2"><i className="fas fa-search" /></button>
                                         </div>
                                     </div> 
+                                    </NavItem>
+                                    <NavItem>
+                                        <Link to="/search"><NavLink className="btn btn-default border-secondary mr-1" style={{fontSize:"14px"}}> Search Film </NavLink></Link>
                                     </NavItem>
                                     <NavItem>
                                         <Link to="/register"><NavLink className="btn btn-default border-secondary mr-1" style={{fontSize:"14px"}}><i className="fas fa-user-plus" /> Register</NavLink></Link>
