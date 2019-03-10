@@ -5,25 +5,42 @@ import {ApiMovie , ApiKey} from './../support/urlApi'
 
 
 class Search extends React.Component {
-    state = {listMovie : []}
+    state = {listMovie : [] , error : ''}
+
+    renderErrorMessage = () => {
+        if(this.state.error !== ''){
+            return <div className="alert alert-danger mt-3" role="alert">
+                        {this.state.error}
+                    </div>
+        }
+    }
 
     onBtnSearchClick = () => {
         var searchValue = this.refs.searchBook.value
         axios.get(ApiMovie+searchValue+'&apikey='+ApiKey) 
-        .then((res)=> this.setState({listMovie : res.data.Search}))
+        .then((res)=> {
+            if (res.data.Response === 'True'){
+                this.setState({listMovie : res.data.Search , error : ''})
+            }
+            else {
+                this.setState({listMovie : [] , error : 'Movie not Found'})
+            }
+           }
+            
+            )
         .catch((err)=> console.log(err))
     }
 
     renderMovieJsx = () => {
         var jsx = this.state.listMovie.map((val) => {
-            return <div className="card col-md-3" style={{width: '18rem' ,margin:'10px'}}>
-                        <img src={val.Poster} className="card-img-top" alt="..." />
-                            <div className="card-body">
-                                <h4>{val.Title}</h4>
-                                <h5>{val.Type}</h5>
-                                <h5>{val.Year}</h5>
-                            </div>
+                return <div className="card col-md-3" style={{width: '18rem' ,margin:'10px'}}>
+                <img src={val.Poster} className="card-img-top" alt="..." />
+                    <div className="card-body">
+                        <h4>{val.Title}</h4>
+                        <h5>{val.Type}</h5>
+                        <h5>{val.Year}</h5>
                     </div>
+                </div>
         })
         return jsx
     }
@@ -44,6 +61,7 @@ class Search extends React.Component {
                 </div>
                 <div className="row justify-content-center">
                     {this.renderMovieJsx()}
+                    {this.renderErrorMessage()}
                 </div> 
             </div>
         )
