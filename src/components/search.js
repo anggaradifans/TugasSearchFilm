@@ -20,6 +20,7 @@ class Search extends React.Component {
         axios.get(ApiMovie+searchValue+'&apikey='+ApiKey) 
         .then((res)=> {
             if (res.data.Response === 'True'){
+                console.log(res)
                 this.setState({listMovie : res.data.Search , error : ''})
             }
             else {

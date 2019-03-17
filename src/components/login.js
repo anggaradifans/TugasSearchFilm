@@ -1,36 +1,86 @@
 import React from 'react'
+import { Link , Redirect } from 'react-router-dom'
+import {connect} from 'react-redux'
+import {onLogin} from './../1.actions'
+import Loader from 'react-loader-spinner'
+import cookie from 'universal-cookie'
 import './../support/css/style.css'
+import swal from 'sweetalert'
+
+//COOKIE MENYIMPAN DATA DI BROWSER
+const Cookie = new cookie()
 
 class Login extends React.Component{
-    render(){
+    // KE TRIGGER KALAU ADA PERUBAHAN PROPS YAITU GLOBAL STATE
+    componentWillReceiveProps(newProps){
+        Cookie.set('userData',newProps.username,{path :'/'})
+    }
+    onBtnLoginClick = () => {
+        var username = this.refs.username.value
+        var password = this.refs.password.value
+        this.props.onLogin(username,password)
+        swal("Success", "Login Success, Redirecting to Homepage" , "success")
+    }
+    
+    renderBtnOrLoading = () => {
+        if(this.props.loading === true){
+            return <Loader type="Audio"
+            color="#00BFFF"
+            height="40"	
+            width="40"/>
+        } else {
+            return <button type="button" className="btn btn-outline-primary" onClick={this.onBtnLoginClick} style={{width:"300px"}} ><i className="fas fa-sign-in-alt" /> Login</button>
+        }
+
+    }
+
+    renderErrorMessage = () => {
+        if(this.props.error !== ""){
+            return <div className="alert alert-danger mt-3" role="alert">
+                        {this.props.error}
+                    </div>
+        }
+    }
+  render(){
+
+    if(this.props.username !== ""){
+      return <Redirect to='/'/>
+    }
         return (
           <div className='bgimg'>
-            <div className='container'>
-                  <div className='row justify-content-center'>
-                    <div className='col-md-4'>
-                      <form style={{backgroundColor:'white'}}>
-                      <h2>Login</h2>
-                        <div className="form-group">
-                          <label htmlFor="exampleInputEmail1">Email address</label>
-                          <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" ref='username' />
-                          <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
-                        </div>
-                        <div className="form-group">
-                          <label htmlFor="exampleInputPassword1">Password</label>
-                          <input type="password" className="form-control" id="exampleInputPassword1" placeholder="Password" />
-                        </div>
-                        <div className="form-group form-check">
-                          <input type="checkbox" className="form-check-input" id="exampleCheck1" />
-                          <label className="form-check-label" htmlFor="exampleCheck1">Remember Me</label>
-                        </div>
-                        {/* <a href=''>Forgot your passwords?</a> */}
-                        <br/>
-                        <input type="button" className="btn btn-primary"  value='Submit'></input>
-                      </form> 
-                      </div>
-                  </div>
+            <div className="container myBody" style={{minHeight:"600px"}}>
+                <div className="row justify-content-sm-center ml-auto mr-auto mt-3" >
+                    
+                    <form className="border mb-3" style={{padding:"20px", borderRadius:"5%" , backgroundColor:"white"}} ref="formLogin">
+                        <fieldset>
+                            <h2>Login</h2>
+                            <div className="form-group row">
+                                <label className="col-sm-3 col-form-label">Username</label>
+                                <div className="col-sm-9">
+                                <input type="text" ref="username" className="form-control" id="inputEmail" placeholder="Username" required autoFocus/>
+                                </div>
+                            </div>
+
+                            <div className="form-group row">
+                                <label className="col-sm-3 col-form-label">Password</label>
+                                <div className="col-sm-9">
+                                <input type="password" ref="password" className="form-control" id="inputPassword" placeholder="Password" onKeyPress={this.renderOnKeyPress} required />
+                                </div>
+                            </div>
+                            
+                            <div className="form-group row">
+                                <div className="col-12" style={{textAlign:"center"}}>
+                                    {this.renderBtnOrLoading()}
+                                    {this.renderErrorMessage()}
+                                </div>
+                                    
+                            </div>
+                            <div className="btn my-auto"><p>Don't have Account? <Link to="/register" className="border-bottom">Sign Up!</Link></p></div>
+                        </fieldset>
+                    </form>
+                </div>                
               </div>
-                <div className="layerlogin">
+                <div className="layer">
 
                 </div>
             </div>
@@ -38,4 +88,12 @@ class Login extends React.Component{
     }
 }
 
-export default Login
+const mapsStatetoProps = (state) => {
+  return {
+      username : state.user.username,
+      loading : state.user.loading,
+      error : state.user.error,
+  }
+}
+
+export default connect(mapsStatetoProps,{onLogin})(Login)

@@ -8,6 +8,7 @@ const objCookie = new cookie()
 export const onLogin = (paramUsername,paramPassword) => {
     return(dispatch) => {
         //untuk mengubah loading menjadi true
+        //dispatch dipakai ketika memakai axios di action creator
         dispatch({
             type : 'LOADING',
         })
@@ -23,7 +24,9 @@ export const onLogin = (paramUsername,paramPassword) => {
                 dispatch(
                     {
                         type : 'LOGIN_SUCCESS',
-                        payload : res.data[0].username
+                        payload : { id : res.data[0].id ,
+                            username : res.data[0].username ,
+                            role : res.data[0].role}
                     }
                 )
             }
@@ -52,7 +55,7 @@ export const keepLogin = (cookie) => {
             if(res.data.length > 0){
                 dispatch({
                     type : 'LOGIN_SUCCESS',
-                    payload : res.data[0].username
+                    payload : res.data[0]
                 })
             }
         })
@@ -75,7 +78,7 @@ export const userRegister = (a,b,c,d) => {
         dispatch({
             type : 'LOADING'
         })
-        var newData = {username : a, password : b, email : c, phone : d}
+        var newData = {username : a, password : b, email : c, phone : d, role :"user"}
         axios.get( urlApi + '/users?username=' + newData.username)
         .then((res) => {
             if(res.data.length > 0) {
@@ -83,10 +86,10 @@ export const userRegister = (a,b,c,d) => {
                     type : 'USERNAME_NOT_AVAILABLE'
                 })
             } else {
-                axios.post( urlApi + '/users',newData)
+                axios.post( urlApi + '/users', newData)
                 .then((res)=> dispatch({
                     type : 'LOGIN_SUCCESS',
-                    payload : a
+                    payload : {username : newData.username}
                 },
                     objCookie.set('userData',a,{path : '/'}) // path '/' agar cookienya diakses di semua components
                 ))
